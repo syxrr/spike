@@ -66,15 +66,15 @@ Complete reference: type, default value, behavior and constraints for every prop
 
 ### Target and playback
 
-| Prop                | Type                                 | Default      | Behavior and constraints                                                                                                                                                                      |
-| ------------------- | ------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `definition`        | `AvatarDefinition`                   | — (required) | Validated `AvatarDefinition` object containing the expressions and animations to display.                                                                                                     |
-| `animation`         | `AnimationKey \| undefined`          | —            | Controls a timeline by key. Each step chooses the displayed expression. Not to be combined with `expression`, which takes precedence; a controlled target takes priority over default values. |
-| `expression`        | `ExpressionKey \| undefined`         | —            | Directly controls an expression by key. Takes precedence over `animation` if both are set; a controlled target takes priority over default values.                                            |
-| `defaultAnimation`  | `AnimationKey \| undefined`          | —            | Defines the initial timeline in uncontrolled mode. Read on mount; autoplay is enabled by default. Not to be combined with `defaultExpression`.                                                |
-| `defaultExpression` | `ExpressionKey \| undefined`         | —            | Defines the initial expression in uncontrolled mode. Read on mount without starting a timeline. Not to be combined with `defaultAnimation`.                                                   |
-| `autoplay`          | `boolean \| undefined`               | `true`       | Automatically starts `defaultAnimation`; without `defaultAnimation`, it has no effect. Only an explicit `false` disables it.                                                                  |
-| `ref`               | `Ref<AvatarController> \| undefined` | —            | Provides access to the imperative `AvatarController` API.                                                                                                                                     |
+| Prop                | Type                                 | Default      | Behavior and constraints                                                                                                                                                      |
+| ------------------- | ------------------------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `definition`        | `AvatarDefinition`                   | — (required) | Validated `AvatarDefinition` object containing the expressions and animations to display.                                                                                     |
+| `animation`         | `AnimationKey \| undefined`          | —            | Controls a timeline by key. Each step chooses the displayed expression. Passing it together with `expression` throws; a controlled target takes priority over default values. |
+| `expression`        | `ExpressionKey \| undefined`         | —            | Directly controls an expression by key. Passing it together with `animation` throws; a controlled target takes priority over default values.                                  |
+| `defaultAnimation`  | `AnimationKey \| undefined`          | —            | Defines the initial timeline in uncontrolled mode. Read on mount; autoplay is enabled by default. Passing it together with `defaultExpression` throws.                        |
+| `defaultExpression` | `ExpressionKey \| undefined`         | —            | Defines the initial expression in uncontrolled mode. Read on mount without starting a timeline. Passing it together with `defaultAnimation` throws.                           |
+| `autoplay`          | `boolean \| undefined`               | `true`       | Automatically starts `defaultAnimation`; without `defaultAnimation`, it has no effect. Only an explicit `false` disables it.                                                  |
+| `ref`               | `Ref<AvatarController> \| undefined` | —            | Provides access to the imperative `AvatarController` API.                                                                                                                     |
 
 ### Presentation
 
@@ -99,17 +99,54 @@ Passing `animation` or `expression` puts the avatar in **controlled** mode;
 `defaultAnimation` and `defaultExpression` do not. Two behaviors are worth
 knowing, because neither is visible in the types:
 
-- **"Mutually exclusive" is a runtime contract, not a compile-time one.**
-  Nothing stops `<Avatar animation="…" expression="…" />` from typechecking.
-  When both are set, **`expression` wins** and `animation` is ignored — the
-  controlled-target effect applies the expression and returns before it reaches
-  the animation branch. The same applies to `defaultAnimation` alongside
-  `defaultExpression`. Pass one of each pair.
+- **"Mutually exclusive" is enforced at runtime, not by the types.** Nothing
+  stops `<Avatar animation="…" expression="…" />` from typechecking, but it
+  **throws on render**:
+
+  > Avatar accepts either animation or expression, not both. Animation controls
+  > a timeline; expression controls a single target.
+
+  `defaultAnimation` together with `defaultExpression` throws the same way. The
+  throw is unconditional and happens before any render output, so it takes down
+  the subtree rather than reaching `onError` — guard it with an error boundary
+  if the props come from somewhere dynamic. Pass one of each pair.
+
 - **In controlled mode the imperative target commands refuse.** `play()` and
   `setExpression()` return
   `{ ok: false, error: { code: 'controlled_by_props', key, message } }` without
   touching playback; drive the avatar through props instead. `pause()`, `stop()`
   and `getState()` are unaffected.
+
+### Callbacks must be referentially stable
+
+`Avatar` lists `onExpressionChange`, `onAnimationEnd` and `onError` in the
+dependency arrays of the effects that invoke them. An inline arrow gets a new
+identity on every render, so the effect re-runs on every render — and if the
+handler sets state, it re-renders, which re-runs the effect, until React throws
+`Maximum update depth exceeded`.
+
+```tsx
+// Loops: new function identity each render.
+<Avatar definition={definition} onExpressionChange={e => setLast(e)} />
+
+// Correct: stable identity.
+const handleExpressionChange = useCallback((e: ExpressionKey) => setLast(e), [])
+<Avatar definition={definition} onExpressionChange={handleExpressionChange} />
+```
+
+Wrap every callback in `useCallback` (or hoist it out of the component). This
+bites only when the handler updates state — a handler that just logs re-fires
+harmlessly.
+
+### Typed keys narrow inputs only
+
+`createAvatar` narrows `animation`, `defaultAnimation`, `expression` and
+`defaultExpression` to the definition's keys, so a typo is a compile error.
+It does **not** narrow callback payloads: `CreatedAvatarProps` overrides those
+four props and inherits the rest from `AvatarProps`, so `onAnimationEnd` and
+`onExpressionChange` still receive the broad `AnimationKey` / `ExpressionKey`
+(both aliases of `string`). Type those parameters with the core key types, not
+with `keyof typeof definition.animations`.
 
 ### Error codes
 
@@ -195,11 +232,58 @@ export function Controls() {
 }
 ```
 
+## Writing a definition
+
+`createAvatar` and `Avatar` both validate the definition and **throw** on a bad
+one (`Invalid avatar definition: …`), so these constraints are worth knowing up
+front. They come from the shipped `avatarDefinition.schema.json`, and several
+are stricter than the TypeScript types suggest:
+
+| Field                                   | Constraint                                                                                                                  |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `colors.body`, `colors.eyes`            | `^#[0-9a-f]{6}$` — **lowercase** six-digit hex. `#5B8DEF` is rejected; the `HexColor` type (`` `#${string}` ``) accepts it. |
+| Expression / animation keys             | `^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$` — lowercase kebab-case, max 64 chars.                                                     |
+| `perspective`                           | `0.1`–`10`. Not a pixel distance; `600` is rejected.                                                                        |
+| `surface.width/height/depth`            | `0.001`–`10000`. `surfacePresets` from `avatar-core` gives sensible per-shape values (most around 240).                     |
+| `surface.roundness` and friends         | `0`–`1`.                                                                                                                    |
+| `surface.type`                          | `sphere`, `mickey`, `cursor`, `cube`, `capsule`, `cylinder`, `cone`, `diamond`.                                             |
+| `steps[].holdMs`                        | `100`–`60000`; `transitionMs` `0`–`5000`; 1–128 steps.                                                                      |
+| `blink.minIntervalMs` / `maxIntervalMs` | `250`–`120000`; `durationMs` `50`–`2000`.                                                                                   |
+| `playbackMode`                          | `loop`, `once` or `pingPong`. `onAnimationEnd` only fires for `once`.                                                       |
+| Head rotations                          | `-360`–`360`; most other numbers are bounded to ±10000.                                                                     |
+
+Validate before shipping a hand-written definition:
+
+```ts
+import { validateAvatarDefinition } from '@bible-strong/avatar-core'
+
+const result = validateAvatarDefinition(json)
+if (!result.ok) console.error(result.errors) // [{ path, code, message }]
+```
+
+The definition is validated once per immutable object reference, and
+revalidated when that reference changes — so build it outside render or
+memoize it, rather than constructing a new object each render.
+
+## Running the demo
+
+[`examples/avatar-demo`](../examples/avatar-demo) is a Vite + React 19 app that
+renders a five-expression, three-animation avatar and drives it through the
+imperative controller, with a live `getState()` and event readout:
+
+```bash
+cd examples/avatar-demo
+npm install
+npm run dev     # http://localhost:5173
+```
+
 ## Verified against
 
 `@bible-strong/avatar-react@0.1.0` with `@bible-strong/avatar-core@0.1.0`,
 React 19.3.0, TypeScript 7.0.2. Every example above typechecks under `strict`
 with `moduleResolution: bundler` (given the `*.css` declaration noted in
-[Installation](#stylesheet-types)). Defaults, the `expression`-over-`animation`
-precedence and the `controlled_by_props` behavior were read from the shipped
-`dist/index.js` and `dist/*.d.ts`.
+[Installation](#stylesheet-types)). Defaults, the definition constraints and the
+`controlled_by_props` behavior were read from the shipped `dist/` bundle,
+`dist/*.d.ts` and `avatarDefinition.schema.json`. The two mutual-exclusivity
+throws, the callback-stability loop and the rendered output were confirmed in a
+real browser against `examples/avatar-demo`.
