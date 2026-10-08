@@ -1,5 +1,17 @@
 import type { ReactNode } from "react";
-import { LayoutGridIcon, BarChart3Icon, ShoppingCartIcon, FileTextIcon, UsersIcon, MegaphoneIcon, SettingsIcon, HelpCircleIcon, ActivityIcon } from "lucide-react";
+import {
+	CalendarDaysIcon,
+	FolderKanbanIcon,
+	LandmarkIcon,
+	LayoutGridIcon,
+	LinkIcon,
+	ListTodoIcon,
+	MailIcon,
+	NotebookPenIcon,
+	PillIcon,
+	SparklesIcon,
+	TargetIcon,
+} from "lucide-react";
 
 export type SidebarNavItem = {
 	title: string;
@@ -14,122 +26,39 @@ export type SidebarNavGroup = {
 	items: SidebarNavItem[];
 };
 
+// Paths are in-page anchors: each points at a widget's id.
 export const navGroups: SidebarNavGroup[] = [
 	{
-		label: "Overview",
+		label: "Today",
 		items: [
-			{
-				title: "Dashboard",
-				path: "#/dashboard",
-				icon: (
-					<LayoutGridIcon
-					/>
-				),
-				isActive: true,
-			},
-			{
-				title: "Sales",
-				path: "#/sales",
-				icon: (
-					<BarChart3Icon
-					/>
-				),
-			},
+			{ title: "Overview", path: "#top", icon: <LayoutGridIcon />, isActive: true },
+			{ title: "Email", path: "#email", icon: <MailIcon /> },
+			{ title: "Calendar", path: "#calendar", icon: <CalendarDaysIcon /> },
 		],
 	},
 	{
-		label: "Store",
+		label: "Life admin",
 		items: [
-			{
-				title: "Orders",
-				path: "#/orders",
-				icon: (
-					<ShoppingCartIcon
-					/>
-				),
-				subItems: [
-					{ title: "All orders", path: "#/orders/all" },
-					{ title: "Unfulfilled", path: "#/orders/unfulfilled" },
-					{ title: "Returns", path: "#/orders/returns" },
-				],
-			},
-			{
-				title: "Products",
-				path: "#/products",
-				icon: (
-					<FileTextIcon
-					/>
-				),
-				subItems: [
-					{ title: "Catalog", path: "#/products/catalog" },
-					{ title: "Inventory", path: "#/products/inventory" },
-					{ title: "Collections", path: "#/products/collections" },
-				],
-			},
-			{
-				title: "Customers",
-				path: "#/customers",
-				icon: (
-					<UsersIcon
-					/>
-				),
-			},
-			{
-				title: "Marketing",
-				path: "#/marketing",
-				icon: (
-					<MegaphoneIcon
-					/>
-				),
-			},
+			{ title: "To-do", path: "#todo", icon: <ListTodoIcon /> },
+			{ title: "Medication", path: "#medication", icon: <PillIcon /> },
+			{ title: "Notes", path: "#notes", icon: <NotebookPenIcon /> },
 		],
 	},
 	{
-		label: "Settings",
+		label: "Building",
 		items: [
-			{
-				title: "Store settings",
-				path: "#/store-settings",
-				icon: (
-					<SettingsIcon
-					/>
-				),
-				subItems: [
-					{ title: "Store profile", path: "#/store-settings/profile" },
-					{ title: "Shipping & delivery", path: "#/store-settings/shipping" },
-					{ title: "Payments", path: "#/store-settings/payments" },
-					{ title: "Staff", path: "#/store-settings/staff" },
-					{ title: "Apps", path: "#/store-settings/apps" },
-				],
-			},
+			{ title: "Projects", path: "#projects", icon: <FolderKanbanIcon /> },
+			{ title: "Goals", path: "#goals", icon: <TargetIcon /> },
+		],
+	},
+	{
+		label: "Money & tools",
+		items: [
+			{ title: "Banking", path: "#banking", icon: <LandmarkIcon /> },
+			{ title: "Claude usage", path: "#claude", icon: <SparklesIcon /> },
+			{ title: "Shortcuts", path: "#shortcuts", icon: <LinkIcon /> },
 		],
 	},
 ];
 
-export const footerNavLinks: SidebarNavItem[] = [
-	{
-		title: "Seller help",
-		path: "#/seller-help",
-		icon: (
-			<HelpCircleIcon
-			/>
-		),
-	},
-	{
-		title: "Platform status",
-		path: "#/status",
-		icon: (
-			<ActivityIcon
-			/>
-		),
-	},
-];
-
-export const navLinks: SidebarNavItem[] = [
-	...navGroups.flatMap((group) =>
-		group.items.flatMap((item) =>
-			item.subItems?.length ? [item, ...item.subItems] : [item]
-		)
-	),
-	...footerNavLinks,
-];
+export const navLinks: SidebarNavItem[] = navGroups.flatMap((group) => group.items);

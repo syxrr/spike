@@ -6,7 +6,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<SidebarInset className="p-4 md:p-6">
+			<SidebarInset className="bg-transparent p-4 md:p-6" id="top">
 				<AppHeader />
 				<div className="flex flex-1 flex-col gap-4">{children}</div>
 			</SidebarInset>
