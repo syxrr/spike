@@ -6,9 +6,10 @@ import source from './avatar.json'
  * So we synthesise a grid of gaze poses up front by varying only the head rotation
  * of `neutral`, and switch between them as the pointer moves.
  *
- * Axes were confirmed by rendering a probe grid:
+ * Axes, measured by rendering each pose and comparing the eye centroid with the
+ * head sphere's centre (eyeballing a probe grid got the pitch sign wrong):
  *   head.y = yaw   (negative looks left, positive looks right)
- *   head.x = pitch (negative looks up,   positive looks down)
+ *   head.x = pitch (POSITIVE looks up, negative looks down)
  *
  * The whole definition is built once at module scope. Avatar validates per object
  * reference, so a stable reference means it validates exactly once.
@@ -17,8 +18,8 @@ export const YAW_STEPS = 9
 export const PITCH_STEPS = 5
 
 const YAW_LIMIT = 30
-const PITCH_UP = -16
-const PITCH_DOWN = 14
+const PITCH_UP = 16
+const PITCH_DOWN = -14
 
 export const gazeKey = (col: number, row: number) => `gaze-c${col}-r${row}`
 
@@ -31,6 +32,7 @@ const gazeKeys: string[] = []
 for (let col = 0; col < YAW_STEPS; col++) {
   for (let row = 0; row < PITCH_STEPS; row++) {
     const yaw = lerp(-YAW_LIMIT, YAW_LIMIT, col / (YAW_STEPS - 1))
+    // row 0 = pointer at the top of the screen = look up.
     const pitch = lerp(PITCH_UP, PITCH_DOWN, row / (PITCH_STEPS - 1))
     const key = gazeKey(col, row)
     gazeKeys.push(key)

@@ -25,18 +25,20 @@ template or layout file, put it there once instead of in each page.
 Set them on the script tag:
 
 ```html
-<script src="spike-avatar.js"
-        data-corner="bottom-right"
-        data-size="132"
-        data-page-clicks="true"
-        defer></script>
+<script
+  src="spike-avatar.js"
+  data-corner="bottom-right"
+  data-size="132"
+  data-page-clicks="true"
+  defer
+></script>
 ```
 
-| Attribute | Default | Meaning |
-| --- | --- | --- |
-| `data-corner` | `bottom-right` | `bottom-right`, `bottom-left`, `top-right` or `top-left`. |
-| `data-size` | `128` | Avatar width/height in px. The corner inset scales with it automatically. |
-| `data-page-clicks` | `true` | `false` makes it react only to clicks on the avatar itself, not anywhere on the page. |
+| Attribute          | Default        | Meaning                                                                               |
+| ------------------ | -------------- | ------------------------------------------------------------------------------------- |
+| `data-corner`      | `bottom-right` | `bottom-right`, `bottom-left`, `top-right` or `top-left`.                             |
+| `data-size`        | `128`          | Avatar width/height in px. The corner inset scales with it automatically.             |
+| `data-page-clicks` | `true`         | `false` makes it react only to clicks on the avatar itself, not anywhere on the page. |
 
 Or drive it yourself:
 
@@ -53,7 +55,8 @@ Or drive it yourself:
 **Follows the cursor.** The renderer has no "look at this point" control —
 expressions are fixed preset keys. So the build synthesises a 9 × 5 grid of gaze
 poses by varying only the head rotation of your `neutral` expression
-(`head.y` = yaw, `head.x` = pitch, both confirmed by rendering a probe grid),
+(`head.y` = yaw, negative left; `head.x` = pitch, positive up — measured from the
+rendered geometry, not eyeballed),
 and switches between them as the pointer moves. Expression changes tween over a
 fixed 420 ms, which gives the gaze a soft lag rather than a snap.
 
@@ -77,7 +80,7 @@ companion switches between:
 - **gaze** — `expression` set, tracking the pointer, no blinking;
 - **animation** — `expression` cleared so `play()` is permitted.
 
-The `expression` prop must be cleared in a render *before* `play()` is called,
+The `expression` prop must be cleared in a render _before_ `play()` is called,
 which is why the play call lives in an effect keyed on the mode rather than in
 the event handler.
 

@@ -271,7 +271,11 @@ memoize it, rather than constructing a new object each render.
 There is no "look at a point" control — `expression` takes preset keys only. To make an avatar track something, synthesise poses up front by varying a base expression's head rotation, then switch between them:
 
 - `head.y` is **yaw** — negative looks left, positive looks right.
-- `head.x` is **pitch** — negative looks up, positive looks down.
+- `head.x` is **pitch** — positive looks up, negative looks down.
+
+Verify the signs by rendering a pose and comparing the eye centroid with the head
+sphere's centre, rather than by eye: the body centroid is pulled upward by any
+nodes above the head, which makes an eyeballed probe grid easy to read backwards.
 
 Build the whole definition once at module scope so it validates once, and remember that direct expression changes tween over a fixed **420 ms**, which caps how snappily a gaze can follow.
 
