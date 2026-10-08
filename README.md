@@ -15,7 +15,8 @@ single self-contained file that drops into any site with one script tag — no
 React or build step required on the host page. It follows the cursor, reacts to
 clicks and stays across page navigations.
 [`examples/plain-site`](examples/plain-site) is a framework-free site that
-exercises it.
+exercises it, and [`docs/migrate-to-portfolio.md`](docs/migrate-to-portfolio.md)
+covers dropping it into a Vite site.
 
 ## Demo
 
