@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local secrets: Google client credentials and linked-account tokens
+.env
+server/.data

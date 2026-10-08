@@ -10,6 +10,8 @@ export type EmailMessage = {
 	/** ISO timestamp. */
 	receivedAt: string;
 	unread: boolean;
+	/** Opens this message in its web client. */
+	url?: string;
 };
 
 export type Mailbox = {
@@ -20,6 +22,10 @@ export type Mailbox = {
 	webUrl: string;
 	unreadCount: number;
 	messages: EmailMessage[];
+	/** False when no account is linked to this slot yet. Absent means connected. */
+	connected?: boolean;
+	/** Set when the account is linked but could not be read (e.g. access revoked). */
+	error?: string;
 };
 
 export type CalendarEvent = {
@@ -31,6 +37,8 @@ export type CalendarEvent = {
 	allDay?: boolean;
 	calendar: string;
 	location?: string;
+	/** Opens the event in its web client. */
+	url?: string;
 };
 
 export type BankAccount = {
@@ -78,6 +86,16 @@ export type Feeds = {
 };
 
 export type FeedName = keyof Feeds;
+
+/** A Google account slot, as listed by GET /api/connections. */
+export type Connection = {
+	slot: MailboxId;
+	label: string;
+	/** Linked account, or null when the slot is empty. */
+	email: string | null;
+	/** The stored login no longer works and must be connected again. */
+	needsReconnect?: boolean;
+};
 
 export type FeedState<T> = {
 	data: T;

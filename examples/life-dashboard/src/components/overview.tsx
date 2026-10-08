@@ -26,6 +26,7 @@ export function Overview() {
 	const { feeds, collections } = useLifeData();
 
 	const unread = feeds.email.data.reduce((sum, m) => sum + m.unreadCount, 0);
+	const inboxes = feeds.email.data.filter((m) => m.connected !== false).length;
 	const nextEvent = feeds.calendar.data
 		.filter((e) => !e.allDay && new Date(e.end) > now)
 		.sort((a, b) => a.start.localeCompare(b.start))[0];
@@ -35,7 +36,7 @@ export function Overview() {
 	const net = feeds.banking.data.accounts.reduce((sum, a) => sum + a.balance, 0);
 
 	const tiles = [
-		{ href: "#email", label: "Unread", value: String(unread), hint: "across 3 inboxes" },
+		{ href: "#email", label: "Unread", value: String(unread), hint: `across ${inboxes} inbox${inboxes === 1 ? "" : "es"}` },
 		{
 			href: "#calendar",
 			label: "Next up",

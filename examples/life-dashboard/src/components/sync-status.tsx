@@ -3,6 +3,7 @@ import { relative } from "@/lib/format";
 import { useLifeData } from "@/lib/life-data";
 import type { FeedName } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { ConnectionsDialog } from "@/components/connections-dialog";
 
 const LABELS: Record<FeedName, string> = {
 	email: "Email",
@@ -41,9 +42,18 @@ export function SyncStatus() {
 			</ul>
 			<div className="flex items-center justify-between">
 				<span className="text-[10px] text-muted-foreground">{newest ? `Checked ${relative(newest)}` : "Checking…"}</span>
-				<Button className="h-6 px-2 text-[11px]" onClick={() => refresh()} size="sm" variant="secondary">
-					Sync now
-				</Button>
+				<div className="flex gap-1">
+					<ConnectionsDialog
+						trigger={
+							<Button className="h-6 px-2 text-[11px]" size="sm" variant="ghost">
+								Accounts
+							</Button>
+						}
+					/>
+					<Button className="h-6 px-2 text-[11px]" onClick={() => refresh()} size="sm" variant="secondary">
+						Sync now
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

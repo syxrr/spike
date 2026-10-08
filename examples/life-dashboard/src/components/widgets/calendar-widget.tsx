@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { ArrowUpRightIcon, CalendarDaysIcon, MapPinIcon } from "lucide-react";
+import { ArrowUpRightIcon, CalendarDaysIcon, Link2Icon, MapPinIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { clock, sameDay } from "@/lib/format";
 import { useLifeData } from "@/lib/life-data";
 import { Empty, SyncBadge, Widget } from "@/components/widgets/widget";
 import { Button } from "@/components/ui/button";
+import { ConnectionsDialog } from "@/components/connections-dialog";
 
 export function CalendarWidget({ className }: { className?: string }) {
 	const { feeds, refresh } = useLifeData();
@@ -71,7 +72,13 @@ export function CalendarWidget({ className }: { className?: string }) {
 									)}
 								/>
 								<div className="flex items-baseline justify-between gap-2">
-									<span className="truncate font-medium text-sm">{e.title}</span>
+									{e.url ? (
+										<a className="truncate font-medium text-sm hover:text-lime" href={e.url} rel="noreferrer" target="_blank">
+											{e.title}
+										</a>
+									) : (
+										<span className="truncate font-medium text-sm">{e.title}</span>
+									)}
 									<span className="shrink-0 font-mono text-[10px] text-muted-foreground">
 										{e.allDay ? "All day" : `${clock(e.start)}–${clock(e.end)}`}
 									</span>
@@ -93,11 +100,22 @@ export function CalendarWidget({ className }: { className?: string }) {
 				<Empty>Nothing scheduled.</Empty>
 			)}
 
-			<Button asChild className="mt-auto self-start px-0 pt-3 text-muted-foreground text-xs hover:text-lime" size="sm" variant="link">
-				<a href="https://calendar.google.com" rel="noreferrer" target="_blank">
-					Open Google Calendar <ArrowUpRightIcon className="size-3" />
-				</a>
-			</Button>
+			<div className="mt-auto flex items-center justify-between gap-2 pt-3">
+				<Button asChild className="px-0 text-muted-foreground text-xs hover:text-lime" size="sm" variant="link">
+					<a href="https://calendar.google.com" rel="noreferrer" target="_blank">
+						Open Google Calendar <ArrowUpRightIcon className="size-3" />
+					</a>
+				</Button>
+				{sync.source === "demo" && (
+					<ConnectionsDialog
+						trigger={
+							<Button className="h-7 text-xs" size="sm" variant="secondary">
+								<Link2Icon /> Connect
+							</Button>
+						}
+					/>
+				)}
+			</div>
 		</Widget>
 	);
 }
