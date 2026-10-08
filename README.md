@@ -8,6 +8,15 @@ Scratch repository for spikes and experiments.
   `@bible-strong/avatar-react`, the `createAvatar` and generic `Avatar`
   components, the full prop reference and the imperative controller API.
 
+## Portfolio companion
+
+[`packages/spike-avatar`](packages/spike-avatar) builds the avatar into a
+single self-contained file that drops into any site with one script tag — no
+React or build step required on the host page. It follows the cursor, reacts to
+clicks and stays across page navigations.
+[`examples/plain-site`](examples/plain-site) is a framework-free site that
+exercises it.
+
 ## Demo
 
 A runnable Vite + React 19 app lives in

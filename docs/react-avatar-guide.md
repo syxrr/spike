@@ -239,18 +239,19 @@ one (`Invalid avatar definition: …`), so these constraints are worth knowing u
 front. They come from the shipped `avatarDefinition.schema.json`, and several
 are stricter than the TypeScript types suggest:
 
-| Field                                   | Constraint                                                                                                                  |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `colors.body`, `colors.eyes`            | `^#[0-9a-f]{6}$` — **lowercase** six-digit hex. `#5B8DEF` is rejected; the `HexColor` type (`` `#${string}` ``) accepts it. |
-| Expression / animation keys             | `^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$` — lowercase kebab-case, max 64 chars.                                                     |
-| `perspective`                           | `0.1`–`10`. Not a pixel distance; `600` is rejected.                                                                        |
-| `surface.width/height/depth`            | `0.001`–`10000`. `surfacePresets` from `avatar-core` gives sensible per-shape values (most around 240).                     |
-| `surface.roundness` and friends         | `0`–`1`.                                                                                                                    |
-| `surface.type`                          | `sphere`, `mickey`, `cursor`, `cube`, `capsule`, `cylinder`, `cone`, `diamond`.                                             |
-| `steps[].holdMs`                        | `100`–`60000`; `transitionMs` `0`–`5000`; 1–128 steps.                                                                      |
-| `blink.minIntervalMs` / `maxIntervalMs` | `250`–`120000`; `durationMs` `50`–`2000`.                                                                                   |
-| `playbackMode`                          | `loop`, `once` or `pingPong`. `onAnimationEnd` only fires for `once`.                                                       |
-| Head rotations                          | `-360`–`360`; most other numbers are bounded to ±10000.                                                                     |
+| Field                                   | Constraint                                                                                                                                                        |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `colors.body`, `colors.eyes`            | `^#[0-9a-f]{6}$` — **lowercase** six-digit hex. `#5B8DEF` is rejected; the `HexColor` type (`` `#${string}` ``) accepts it.                                       |
+| Expression / animation keys             | `^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$` — lowercase kebab-case, max 64 chars.                                                                                           |
+| `perspective`                           | `0.1`–`10`. Not a pixel distance; `600` is rejected.                                                                                                              |
+| `surface.width/height/depth`            | `0.001`–`10000`. `surfacePresets` from `avatar-core` gives sensible per-shape values (most around 240).                                                           |
+| `surface.roundness` and friends         | `0`–`1`.                                                                                                                                                          |
+| `surface.type`                          | `sphere`, `mickey`, `cursor`, `cube`, `capsule`, `cylinder`, `cone`, `diamond`.                                                                                   |
+| `steps[].holdMs`                        | `100`–`60000`; `transitionMs` `0`–`5000`; 1–128 steps.                                                                                                            |
+| `blink.minIntervalMs` / `maxIntervalMs` | `250`–`120000`; `durationMs` `50`–`2000`.                                                                                                                         |
+| `playbackMode`                          | `loop`, `once` or `pingPong`. `onAnimationEnd` only fires for `once`.                                                                                             |
+| Head rotations                          | `-360`–`360`; most other numbers are bounded to ±10000.                                                                                                           |
+| `expressions.neutral`                   | **Required.** A definition with no expression literally keyed `neutral` is rejected with `must have required property 'neutral'`. It is what `stop()` returns to. |
 
 Validate before shipping a hand-written definition:
 
@@ -264,6 +265,17 @@ if (!result.ok) console.error(result.errors) // [{ path, code, message }]
 The definition is validated once per immutable object reference, and
 revalidated when that reference changes — so build it outside render or
 memoize it, rather than constructing a new object each render.
+
+### Driving gaze
+
+There is no "look at a point" control — `expression` takes preset keys only. To make an avatar track something, synthesise poses up front by varying a base expression's head rotation, then switch between them:
+
+- `head.y` is **yaw** — negative looks left, positive looks right.
+- `head.x` is **pitch** — negative looks up, positive looks down.
+
+Build the whole definition once at module scope so it validates once, and remember that direct expression changes tween over a fixed **420 ms**, which caps how snappily a gaze can follow.
+
+Note the mode trade-off: while `expression` is set the avatar is controlled, so animations and blinking are suspended. Alternating between a controlled gaze and uncontrolled `play()` works — clear `expression` in one render, then call `play()` in an effect — but the two cannot run at once.
 
 ## Running the demo
 
