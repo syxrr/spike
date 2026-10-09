@@ -28,3 +28,9 @@ cd examples/avatar-demo
 npm install
 npm run dev     # http://localhost:5173
 ```
+
+## HBT Conference showreel
+
+[`examples/hbt-showreel`](examples/hbt-showreel) is a Remotion project for Dy-Mark's
+HBT Conference 2026 trade-show loop (43s, 4K, silent). `npm run dev` opens Studio;
+`npm run render` writes the 4K master.
