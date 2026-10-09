@@ -28,3 +28,9 @@ cd examples/avatar-demo
 npm install
 npm run dev     # http://localhost:5173
 ```
+
+## Moved out
+
+- **Life dashboard** now lives in its own repository,
+  [`syxrr/life-dashboard`](https://github.com/syxrr/life-dashboard), with its
+  history.
