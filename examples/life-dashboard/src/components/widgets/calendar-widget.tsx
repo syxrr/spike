@@ -50,7 +50,7 @@ export function CalendarWidget({ className }: { className?: string }) {
 							onClick={() => setOffset(i)}
 							type="button"
 						>
-							<span className="font-mono text-[9px] uppercase">{d.toLocaleDateString(undefined, { weekday: "narrow" })}</span>
+							<span className="font-mono text-[10px] uppercase">{d.toLocaleDateString(undefined, { weekday: "narrow" })}</span>
 							<span className="font-medium text-sm tabular-nums">{d.getDate()}</span>
 							<span className={cn("size-1 rounded-full", has ? (on ? "bg-ink" : "bg-lime") : "bg-transparent")} />
 						</button>
@@ -64,7 +64,7 @@ export function CalendarWidget({ className }: { className?: string }) {
 						const past = !e.allDay && new Date(e.end).getTime() < now;
 						const current = !e.allDay && new Date(e.start).getTime() <= now && !past;
 						return (
-							<li className={cn("relative", past && "opacity-45")} key={e.id}>
+							<li className={cn("relative", past && "opacity-60")} key={e.id}>
 								<span
 									className={cn(
 										"absolute top-1.5 -left-[16.5px] size-2 rounded-full ring-2 ring-background",
@@ -79,7 +79,7 @@ export function CalendarWidget({ className }: { className?: string }) {
 									) : (
 										<span className="truncate font-medium text-sm">{e.title}</span>
 									)}
-									<span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+									<span className="shrink-0 font-mono text-[11px] text-muted-foreground">
 										{e.allDay ? "All day" : `${clock(e.start)}–${clock(e.end)}`}
 									</span>
 								</div>

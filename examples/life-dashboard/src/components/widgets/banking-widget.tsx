@@ -41,7 +41,7 @@ export function BankingWidget({ className }: { className?: string }) {
 			<div className="mt-3 grid grid-cols-3 gap-2">
 				{bank.accounts.map((a) => (
 					<div className="rounded-xl bg-white/[0.025] px-3 py-2 ring-1 ring-white/[0.06]" key={a.id}>
-						<Mono className="block truncate text-[10px] uppercase tracking-wider">{a.name}</Mono>
+						<Mono className="block truncate text-[11px] uppercase tracking-wider">{a.name}</Mono>
 						<span className={cn("text-sm tabular-nums", a.balance < 0 && "text-red-300")}>{money(a.balance, bank.currency)}</span>
 					</div>
 				))}
@@ -57,14 +57,14 @@ export function BankingWidget({ className }: { className?: string }) {
 					<Area dataKey="spent" fill={`url(#${patternId})`} fillOpacity={0.5} stroke="var(--lime)" strokeWidth={1.5} type="monotone" />
 				</AreaChart>
 			</ChartContainer>
-			<Mono className="text-[10px]">Cumulative spend this month</Mono>
+			<Mono className="text-[11px]">Cumulative spend this month</Mono>
 
 			<ul className="mt-3 flex flex-col">
 				{bank.transactions.slice(0, 4).map((t) => (
 					<li className="flex items-center justify-between gap-2 border-white/5 border-t py-1.5 first:border-t-0" key={t.id}>
 						<span className="min-w-0">
 							<span className="block truncate text-sm">{t.merchant}</span>
-							<Mono className="text-[10px]">
+							<Mono className="text-[11px]">
 								{t.category} · {new Date(t.date).toLocaleDateString(undefined, { day: "numeric", month: "short" })}
 							</Mono>
 						</span>

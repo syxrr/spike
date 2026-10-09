@@ -56,6 +56,7 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: { proxy },
+  // The start-dashboard launchers set OPEN_BROWSER so the dashboard opens itself.
+  server: { proxy, open: process.env.OPEN_BROWSER === '1' },
   preview: { proxy },
 }))

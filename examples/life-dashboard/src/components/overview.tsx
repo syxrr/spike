@@ -57,7 +57,7 @@ export function Overview() {
 	return (
 		<section className="glass relative overflow-hidden rounded-2xl p-5 md:p-6">
 			{/* Dithered lime wash behind the greeting. */}
-			<div className="dither pointer-events-none absolute -top-10 -right-10 h-64 w-96 text-lime/25 [mask-image:radial-gradient(closest-side,black,transparent)]" />
+			<div className="dither pointer-events-none absolute -top-10 -right-10 h-64 w-96 text-lime/15 [mask-image:radial-gradient(closest-side,black,transparent)]" />
 
 			<div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 				<div className="flex items-center gap-4">
@@ -79,7 +79,7 @@ export function Overview() {
 								className="flex h-full flex-col rounded-xl bg-white/[0.03] px-3.5 py-2.5 ring-1 ring-white/[0.07] transition-colors hover:bg-lime/10 hover:ring-lime/30 lg:min-w-28"
 								href={t.href}
 							>
-								<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{t.label}</span>
+								<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">{t.label}</span>
 								<span className={cn("font-medium text-xl tabular-nums", t.done && "text-lime")}>{t.value}</span>
 								<span className="max-w-32 truncate text-muted-foreground text-xs">{t.hint}</span>
 							</a>

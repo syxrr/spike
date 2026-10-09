@@ -78,10 +78,10 @@ export function ProjectsWidget({ className }: { className?: string }) {
 						<div className="flex items-start justify-between gap-2">
 							<span className="min-w-0">
 								<span className="block truncate font-medium text-sm">{p.name}</span>
-								<Mono className="text-[10px] uppercase tracking-wider">{p.kind}</Mono>
+								<Mono className="text-[11px] uppercase tracking-wider">{p.kind}</Mono>
 							</span>
 							<button
-								className={cn("shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase", STATUS_STYLE[p.status])}
+								className={cn("shrink-0 rounded-full px-2 py-0.5 font-mono text-[11px] uppercase", STATUS_STYLE[p.status])}
 								onClick={() => patch(p.id, (x) => ({ status: STATUS_ORDER[(STATUS_ORDER.indexOf(x.status) + 1) % STATUS_ORDER.length] }))}
 								title="Click to change status"
 								type="button"
@@ -97,7 +97,7 @@ export function ProjectsWidget({ className }: { className?: string }) {
 						<div className="flex gap-1">
 							{[-10, 10].map((step) => (
 								<Button
-									className="h-5 px-1.5 font-mono text-[10px]"
+									className="h-5 px-1.5 font-mono text-[11px]"
 									key={step}
 									onClick={() => patch(p.id, (x) => ({ progress: Math.max(0, Math.min(100, x.progress + step)) }))}
 									size="sm"

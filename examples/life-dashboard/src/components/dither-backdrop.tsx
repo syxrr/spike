@@ -74,7 +74,7 @@ export function DitherBackdrop() {
 					data[o] = LIME[0];
 					data[o + 1] = LIME[1];
 					data[o + 2] = LIME[2];
-					data[o + 3] = on ? 120 : 0;
+					data[o + 3] = on ? 100 : 0;
 				}
 			}
 			ctx.putImageData(image, 0, 0);
@@ -101,7 +101,7 @@ export function DitherBackdrop() {
 	return (
 		<canvas
 			aria-hidden
-			className="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-60 [image-rendering:pixelated]"
+			className="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-50 [image-rendering:pixelated]"
 			ref={ref}
 		/>
 	);

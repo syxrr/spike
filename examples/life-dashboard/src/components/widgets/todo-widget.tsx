@@ -73,7 +73,7 @@ export function TodoWidget({ className }: { className?: string }) {
 				) : (
 					<span />
 				)}
-				<Mono className="text-[10px]">Saved on this device</Mono>
+				<Mono className="text-[11px]">Saved on this device</Mono>
 			</div>
 		</Widget>
 	);

@@ -51,7 +51,7 @@ export function EmailWidget({ className }: { className?: string }) {
 						<span className="truncate sm:hidden">{m.label.split(" / ")[0]}</span>
 						<span className="hidden truncate sm:inline">{m.label}</span>
 						{m.unreadCount > 0 && (
-							<span className="rounded-full bg-lime px-1.5 font-mono text-[10px] text-ink leading-4">{m.unreadCount}</span>
+							<span className="rounded-full bg-lime px-1.5 font-mono text-[11px] text-ink leading-4">{m.unreadCount}</span>
 						)}
 					</button>
 				))}
@@ -89,9 +89,9 @@ export function EmailWidget({ className }: { className?: string }) {
 								<span className="min-w-0 flex-1">
 									<span className="flex items-baseline justify-between gap-2">
 										<span className={cn("truncate text-sm", msg.unread ? "font-medium" : "text-muted-foreground")}>{msg.from}</span>
-										<span className="shrink-0 font-mono text-[10px] text-muted-foreground">{relative(msg.receivedAt)}</span>
+										<span className="shrink-0 font-mono text-[11px] text-muted-foreground">{relative(msg.receivedAt)}</span>
 									</span>
-									<span className="block truncate text-[13px] text-foreground/85">{msg.subject}</span>
+									<span className="block truncate text-[13px] text-foreground">{msg.subject}</span>
 									<span className="block truncate text-muted-foreground text-xs">{msg.snippet}</span>
 								</span>
 							</a>

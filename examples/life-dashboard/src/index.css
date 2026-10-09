@@ -19,7 +19,7 @@
   --secondary: rgb(255 255 255 / 0.07);
   --secondary-foreground: #eef2e8;
   --muted: rgb(255 255 255 / 0.06);
-  --muted-foreground: #8e958a;
+  --muted-foreground: #b3bab0;
   --accent: rgb(166 255 0 / 0.1);
   --accent-foreground: #eef2e8;
   --destructive: #ff5c5c;
@@ -98,7 +98,7 @@
   /* Dense enough to stay legible where backdrop-filter is unsupported. The
      build adds -webkit- itself: declaring both makes the minifier keep only
      the prefixed one, which Chrome ignores. */
-  background: linear-gradient(180deg, rgb(30 33 36 / 0.62), rgb(17 19 22 / 0.55));
+  background: linear-gradient(180deg, rgb(30 33 36 / 0.74), rgb(17 19 22 / 0.68));
   backdrop-filter: blur(24px) saturate(160%);
   border: 1px solid rgb(255 255 255 / 0.09);
   box-shadow:

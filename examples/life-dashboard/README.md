@@ -4,6 +4,13 @@ A personal dashboard built on the `@efferd/dashboard-4` shadcn block, styled
 after the spike avatar: lime `#a6ff00` on ink `#111316`, frosted-glass panels
 over an animated 1-bit ordered-dither glow.
 
+**Easiest:** install [Node.js](https://nodejs.org) (LTS), then double-click
+`start-dashboard.cmd` (Windows) or `start-dashboard.command` (Mac) in this
+folder. The first run installs everything; each run starts the dashboard and
+opens it in your browser. Keep the window open while you use it.
+
+From a terminal instead:
+
 ```bash
 npm install
 npm run dev     # dashboard on http://localhost:5173, API server on :8787

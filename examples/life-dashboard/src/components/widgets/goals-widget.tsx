@@ -52,11 +52,11 @@ export function GoalsWidget({ className }: { className?: string }) {
 								</Button>
 							</div>
 							<div className="mt-1 flex justify-between">
-								<Mono className="text-[10px]">
+								<Mono className="text-[11px]">
 									{Math.round(pct)}%{left !== null && ` · ${left >= 0 ? `${left}d left` : "past due"}`}
 								</Mono>
 								<button
-									className="font-mono text-[10px] text-muted-foreground opacity-0 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
+									className="font-mono text-[11px] text-muted-foreground opacity-0 hover:text-red-400 group-hover:opacity-100 focus-visible:opacity-100"
 									onClick={() => update("goals", (all) => all.filter((x) => x.id !== g.id))}
 									type="button"
 								>

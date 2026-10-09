@@ -25,7 +25,7 @@ export function AppHeader() {
 			</div>
 			<div className="flex items-center gap-3">
 				{IS_PREVIEW && (
-					<span className="rounded-full bg-amber-400/10 px-2.5 py-1 font-mono text-[10px] text-amber-300 uppercase tracking-wider ring-1 ring-amber-400/25">
+					<span className="rounded-full bg-amber-400/10 px-2.5 py-1 font-mono text-[11px] text-amber-300 uppercase tracking-wider ring-1 ring-amber-400/25">
 						Preview · demo data
 					</span>
 				)}

@@ -32,7 +32,7 @@ export function NotesWidget({ className }: { className?: string }) {
 					value={draft}
 				/>
 				<div className="absolute right-2 bottom-2 flex items-center gap-2">
-					<Mono className="hidden text-[10px] sm:inline">⌘↵</Mono>
+					<Mono className="hidden text-[11px] sm:inline">⌘↵</Mono>
 					<Button className="h-6 px-2.5 text-xs" disabled={!draft.trim()} onClick={save} size="sm">
 						Save
 					</Button>
@@ -42,8 +42,8 @@ export function NotesWidget({ className }: { className?: string }) {
 			<ul className="mt-3 flex flex-col gap-1.5">
 				{notes.slice(0, 4).map((n) => (
 					<li className="group relative rounded-xl bg-white/[0.025] px-3 py-2 ring-1 ring-white/[0.06]" key={n.id}>
-						<p className="line-clamp-2 pr-5 text-[13px] text-foreground/90">{n.text}</p>
-						<Mono className="text-[10px]">{relative(n.updatedAt)}</Mono>
+						<p className="line-clamp-2 pr-5 text-[13px] text-foreground">{n.text}</p>
+						<Mono className="text-[11px]">{relative(n.updatedAt)}</Mono>
 						<Button
 							aria-label="Delete note"
 							className="absolute top-1.5 right-1.5 size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"

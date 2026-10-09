@@ -19,7 +19,7 @@ export function AppSidebar() {
 						<img alt="" className="size-8 shrink-0" src={spike} />
 						<span className="flex flex-col leading-tight">
 							<span className="font-medium">Spike</span>
-							<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">life dashboard</span>
+							<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">life dashboard</span>
 						</span>
 					</a>
 				</SidebarMenuButton>

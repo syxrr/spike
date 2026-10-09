@@ -61,7 +61,7 @@ export function SyncBadge({
 	}[source];
 	return (
 		<Button
-			className="h-6 gap-1.5 rounded-full px-2 font-mono text-[10px] uppercase tracking-wider"
+			className="h-6 gap-1.5 rounded-full px-2 font-mono text-[11px] uppercase tracking-wider"
 			onClick={onRefresh}
 			size="sm"
 			title={title}
@@ -116,5 +116,5 @@ export function Empty({ children }: { children: ReactNode }) {
 }
 
 export function Mono({ className, children }: { className?: string; children: ReactNode }) {
-	return <span className={cn("font-mono text-[11px] text-muted-foreground tabular-nums", className)}>{children}</span>;
+	return <span className={cn("font-mono text-xs text-muted-foreground tabular-nums", className)}>{children}</span>;
 }

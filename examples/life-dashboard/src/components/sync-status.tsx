@@ -27,8 +27,8 @@ export function SyncStatus() {
 			)}
 		>
 			<div className="flex items-center justify-between">
-				<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">Sync</span>
-				<span className="font-mono text-[10px] text-muted-foreground">
+				<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">Sync</span>
+				<span className="font-mono text-[11px] text-muted-foreground">
 					{live}/{names.length} live
 				</span>
 			</div>
@@ -46,7 +46,7 @@ export function SyncStatus() {
 				))}
 			</ul>
 			<div className="flex items-center justify-between">
-				<span className="text-[10px] text-muted-foreground">{newest ? `Checked ${relative(newest)}` : "Checking…"}</span>
+				<span className="text-[11px] text-muted-foreground">{newest ? `Checked ${relative(newest)}` : "Checking…"}</span>
 				<div className="flex gap-1">
 					<ConnectionsDialog
 						trigger={

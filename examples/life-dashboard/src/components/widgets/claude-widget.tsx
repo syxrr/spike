@@ -38,7 +38,7 @@ export function ClaudeWidget({ className }: { className?: string }) {
 								<span className="font-medium font-mono text-sm tabular-nums">{l.pct}%</span>
 							</div>
 							<Meter tone={l.pct >= 90 ? "warn" : "lime"} value={l.pct} />
-							<Mono className="text-[10px]">Resets {relative(l.resets)}</Mono>
+							<Mono className="text-[11px]">Resets {relative(l.resets)}</Mono>
 						</div>
 					))}
 				</div>
