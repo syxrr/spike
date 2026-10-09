@@ -35,7 +35,12 @@ export function SyncStatus() {
 			<ul className="grid grid-cols-2 gap-x-2 gap-y-1">
 				{names.map((n) => (
 					<li className="flex items-center gap-1.5 text-xs" key={n}>
-						<span className={cn("size-1.5 rounded-full", feeds[n].source === "live" ? "bg-lime" : "bg-amber-400")} />
+						<span
+							className={cn(
+								"size-1.5 rounded-full",
+								{ live: "bg-lime", offline: "bg-white/40", demo: "bg-amber-400" }[feeds[n].source]
+							)}
+						/>
 						{LABELS[n]}
 					</li>
 				))}

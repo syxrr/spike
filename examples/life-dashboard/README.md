@@ -35,6 +35,28 @@ backend only has to return those.
 Saved collections use keys prefixed `life-dashboard:v1:` and stay in step
 across open tabs. "Reset saved data" in the avatar menu clears them.
 
+## Install it as an app
+
+The dashboard is a Progressive Web App: it installs to a home screen or dock,
+opens full screen with the spike icon, and starts offline.
+
+- **Desktop Chrome / Edge:** avatar menu → **Install app** (or the install
+  icon in the address bar).
+- **iPhone / iPad:** open it in Safari → Share → **Add to Home Screen**. The
+  avatar menu's **Install app** shows the same steps.
+- **Mac Safari:** File → **Add to Dock**.
+
+Offline, the app opens from its cache and shows the last email and calendar
+it synced, marked **Offline**, until the server answers again. Disconnecting
+an account clears its cached copy.
+
+**Current limit:** the server runs on one computer and listens only to that
+computer, so a phone can't reach it yet, and to-dos, notes and the other
+saved data live in each browser separately. Hosting the server (on a cloud
+service, or at home behind Tailscale) is what makes it reachable from every
+device; moving saved data onto the server is what syncs it. Nothing in the
+app needs to change for either.
+
 ## Connect Gmail and Google Calendar
 
 The server reads Gmail and Calendar through your own Google Cloud OAuth

@@ -35,21 +35,57 @@ type LifeData = {
 
 const LifeDataContext = createContext<LifeData | null>(null);
 
+type CachedFeed<T> = { data: T; at: number };
+
+/** Last live copy of each feed, so the installed app has real data offline. */
+function readCachedFeed<K extends FeedName>(name: K): CachedFeed<Feeds[K]> | null {
+	try {
+		const raw = localStorage.getItem(`${STORAGE_PREFIX}feed:${name}`);
+		if (raw) return JSON.parse(raw) as CachedFeed<Feeds[K]>;
+	} catch {
+		// Storage blocked or corrupt: no cached copy.
+	}
+	return null;
+}
+
+function writeCachedFeed<K extends FeedName>(name: K, value: CachedFeed<Feeds[K]> | null) {
+	try {
+		const key = `${STORAGE_PREFIX}feed:${name}`;
+		if (value) localStorage.setItem(key, JSON.stringify(value));
+		else localStorage.removeItem(key);
+	} catch {
+		// Storage blocked or full: the feed still works, just not offline.
+	}
+}
+
 /**
- * Ask the backend for a feed. Anything other than a JSON 200 (no backend yet,
- * a Vite dev server answering with index.html, a network error) falls back to
- * demo data, flagged so the widget can say so.
+ * Ask the backend for a feed.
+ * - JSON 200: live data, cached for offline use.
+ * - JSON error from the server (e.g. nothing linked yet): demo data, and any
+ *   cached copy is dropped so a disconnected account's mail doesn't linger.
+ * - No answer (offline, server down, Vite serving index.html): the cached
+ *   copy marked "offline", or demo data when there is none.
  */
 async function loadFeed<K extends FeedName>(name: K): Promise<FeedState<Feeds[K]>> {
+	const demo = (): FeedState<Feeds[K]> => ({ data: demoFeeds()[name], source: "demo", syncedAt: Date.now(), loading: false });
 	try {
 		const res = await fetch(`/api/${name}`, { headers: { accept: "application/json" } });
-		if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
-			return { data: (await res.json()) as Feeds[K], source: "live", syncedAt: Date.now(), loading: false };
+		const isJson = res.headers.get("content-type")?.includes("application/json");
+		if (res.ok && isJson) {
+			const data = (await res.json()) as Feeds[K];
+			const at = Date.now();
+			writeCachedFeed(name, { data, at });
+			return { data, source: "live", syncedAt: at, loading: false };
+		}
+		if (isJson && res.status === 404) {
+			writeCachedFeed(name, null);
+			return demo();
 		}
 	} catch {
-		// Fall through to demo data.
+		// Network error: fall through to the cached copy.
 	}
-	return { data: demoFeeds()[name], source: "demo", syncedAt: Date.now(), loading: false };
+	const cached = readCachedFeed(name);
+	return cached ? { data: cached.data, source: "offline", syncedAt: cached.at, loading: false } : demo();
 }
 
 function readCollection<K extends keyof Collections>(key: K): Collections[K] {
@@ -75,12 +111,12 @@ export function LifeDataProvider({ children }: { children: ReactNode }) {
 		const demo = demoFeeds();
 		const initial = {} as FeedStates;
 		for (const name of FEEDS) {
-			(initial as Record<FeedName, FeedState<unknown>>)[name] = {
-				data: demo[name],
-				source: "demo",
-				syncedAt: 0,
-				loading: true,
-			};
+			// Open on the last live copy when there is one, so the app starts
+			// with real data instead of flashing demo values.
+			const cached = readCachedFeed(name);
+			(initial as Record<FeedName, FeedState<unknown>>)[name] = cached
+				? { data: cached.data, source: "offline", syncedAt: cached.at, loading: true }
+				: { data: demo[name], source: "demo", syncedAt: 0, loading: true };
 		}
 		return initial;
 	});

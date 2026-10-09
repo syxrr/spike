@@ -99,8 +99,11 @@ export type Connection = {
 
 export type FeedState<T> = {
 	data: T;
-	/** "demo" until /api/<name> answers with JSON. */
-	source: "live" | "demo";
+	/**
+	 * "live": fresh from /api/<name>. "offline": the last live copy, shown while
+	 * the server can't be reached. "demo": nothing connected yet.
+	 */
+	source: "live" | "offline" | "demo";
 	syncedAt: number;
 	loading: boolean;
 };

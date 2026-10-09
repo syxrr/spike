@@ -35,29 +35,40 @@ export function Widget({ id, title, icon: Icon, action, className, contentClassN
 	);
 }
 
-/** Says whether a feed is live or showing demo data, and re-syncs on click. */
+const SYNC_LOOK = {
+	live: { label: "Live", dot: "bg-lime shadow-[0_0_8px_var(--lime)]", text: "text-lime" },
+	offline: { label: "Offline", dot: "bg-white/40", text: "text-muted-foreground" },
+	demo: { label: "Demo", dot: "bg-amber-400", text: "text-amber-300" },
+} as const;
+
+/** Says whether a feed is live, an offline copy, or demo data; re-syncs on click. */
 export function SyncBadge({
 	source,
 	syncedAt,
 	loading,
 	onRefresh,
 }: {
-	source: "live" | "demo";
+	source: keyof typeof SYNC_LOOK;
 	syncedAt: number;
 	loading: boolean;
 	onRefresh: () => void;
 }) {
-	const live = source === "live";
+	const look = SYNC_LOOK[source];
+	const title = {
+		live: `Synced ${syncedAt ? relative(syncedAt) : "…"}. Click to refresh.`,
+		offline: `Can't reach the server. Showing data from ${relative(syncedAt)}. Click to retry.`,
+		demo: "Nothing connected yet: showing demo data. Click to retry.",
+	}[source];
 	return (
 		<Button
 			className="h-6 gap-1.5 rounded-full px-2 font-mono text-[10px] uppercase tracking-wider"
 			onClick={onRefresh}
 			size="sm"
-			title={live ? `Synced ${syncedAt ? relative(syncedAt) : "…"} · click to refresh` : "No backend connected yet: showing demo data. Click to retry."}
+			title={title}
 			variant="ghost"
 		>
-			<span className={cn("size-1.5 rounded-full", live ? "bg-lime shadow-[0_0_8px_var(--lime)]" : "bg-amber-400")} />
-			<span className={live ? "text-lime" : "text-amber-300"}>{live ? "Live" : "Demo"}</span>
+			<span className={cn("size-1.5 rounded-full", look.dot)} />
+			<span className={look.text}>{look.label}</span>
 			<RefreshCwIcon className={cn("size-3 text-muted-foreground", loading && "animate-spin")} />
 		</Button>
 	);
