@@ -8,6 +8,7 @@ import {
 	type ReactNode,
 } from "react";
 import { demoFeeds, starterCollections } from "@/lib/demo-data";
+import { IS_PREVIEW } from "@/lib/preview";
 import type { Collections, FeedName, Feeds, FeedState } from "@/lib/types";
 
 /** How often each feed re-syncs while the tab is open. */
@@ -68,6 +69,7 @@ function writeCachedFeed<K extends FeedName>(name: K, value: CachedFeed<Feeds[K]
  */
 async function loadFeed<K extends FeedName>(name: K): Promise<FeedState<Feeds[K]>> {
 	const demo = (): FeedState<Feeds[K]> => ({ data: demoFeeds()[name], source: "demo", syncedAt: Date.now(), loading: false });
+	if (IS_PREVIEW) return demo();
 	try {
 		const res = await fetch(`/api/${name}`, { headers: { accept: "application/json" } });
 		const isJson = res.headers.get("content-type")?.includes("application/json");

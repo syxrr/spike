@@ -11,13 +11,19 @@ const proxy = { '/api': api, '/auth': api }
 
 const INK = '#08090a'
 
-export default defineConfig({
+// `--mode artifact` builds a single-page preview (scripts/artifact-page.mjs
+// inlines it): no service worker, every asset inlined, demo data only.
+export default defineConfig(({ mode }) => ({
+  ...(mode === 'artifact' && {
+    build: { outDir: 'dist-artifact', assetsInlineLimit: Number.MAX_SAFE_INTEGER, cssCodeSplit: false },
+  }),
   plugins: [
     react(),
     tailwindcss(),
     // Installable app + offline shell. Only the built app is cached: feed data
     // is cached by the dashboard itself, and /api and /auth always hit the
     // network so sign-in redirects are never answered from cache.
+    mode !== 'artifact' &&
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['spike.svg', 'apple-touch-icon-180x180.png'],
@@ -52,4 +58,4 @@ export default defineConfig({
   },
   server: { proxy },
   preview: { proxy },
-})
+}))

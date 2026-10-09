@@ -99,6 +99,14 @@ account, with meetings shared between them listed once.
   any other host. It has no login of its own, so don't expose it to a
   network without adding one.
 
+## Preview page
+
+`npm run build:artifact` builds a single self-contained HTML page
+(`dist-artifact/spike-life-dashboard.html`) for sharing a look at the
+dashboard without running anything: every asset is inlined, there is no
+service worker, the feeds show demo data and a "Preview" label marks it.
+To-dos and other saved data still work, kept in that browser.
+
 ## Layout
 
 - `src/lib/` — types, demo data, the `LifeDataProvider` (feeds + saved

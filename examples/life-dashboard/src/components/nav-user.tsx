@@ -11,6 +11,7 @@ import {
 import { DownloadIcon, RefreshCwIcon, Trash2Icon } from "lucide-react";
 import { useLifeData } from "@/lib/life-data";
 import { useInstallApp } from "@/lib/install";
+import { IS_PREVIEW } from "@/lib/preview";
 import { InstallHelpDialog } from "@/components/install-app";
 import spike from "@/assets/spike.svg";
 
@@ -48,17 +49,22 @@ export function NavUser() {
 						<RefreshCwIcon />
 						Sync all feeds
 					</DropdownMenuItem>
-					{!installed && (
+					{!installed && !IS_PREVIEW && (
 						<DropdownMenuItem onSelect={async () => (await install()) || setInstallHelp(true)}>
 							<DownloadIcon />
 							Install app
 						</DropdownMenuItem>
 					)}
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={resetLocal} variant="destructive">
-						<Trash2Icon />
-						Reset saved data
-					</DropdownMenuItem>
+					{/* The preview frame refuses confirm(), so reset would never run there. */}
+					{!IS_PREVIEW && (
+						<>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={resetLocal} variant="destructive">
+								<Trash2Icon />
+								Reset saved data
+							</DropdownMenuItem>
+						</>
+					)}
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{/* Outside the menu, so it survives the menu closing. */}

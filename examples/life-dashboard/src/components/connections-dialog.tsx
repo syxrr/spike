@@ -3,6 +3,7 @@ import { AlertTriangleIcon, Link2Icon, Loader2Icon, Unlink2Icon } from "lucide-r
 import { cn } from "@/lib/utils";
 import { useLifeData } from "@/lib/life-data";
 import type { Connection } from "@/lib/types";
+import { IS_PREVIEW } from "@/lib/preview";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -26,6 +27,7 @@ export function ConnectionsDialog({ trigger }: { trigger: ReactNode }) {
 	const [busy, setBusy] = useState<string | null>(null);
 
 	const load = useCallback(async () => {
+		if (IS_PREVIEW) return setStatus({ kind: "offline" });
 		try {
 			const res = await fetch("/api/connections", { headers: { accept: "application/json" } });
 			if (!res.ok || !res.headers.get("content-type")?.includes("application/json")) throw new Error();
@@ -69,7 +71,14 @@ export function ConnectionsDialog({ trigger }: { trigger: ReactNode }) {
 					</div>
 				)}
 
-				{status.kind === "offline" && (
+				{status.kind === "offline" && IS_PREVIEW && (
+					<Notice>
+						This is a preview with demo data. Connecting Gmail and Calendar needs the dashboard running on your computer
+						(<code className="text-lime">npm run dev</code>).
+					</Notice>
+				)}
+
+				{status.kind === "offline" && !IS_PREVIEW && (
 					<Notice>
 						The dashboard server isn't running. Start everything with <code className="text-lime">npm run dev</code>, or{" "}
 						<code className="text-lime">npm start</code> after a build.

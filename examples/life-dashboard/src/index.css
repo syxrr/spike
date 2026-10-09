@@ -117,3 +117,9 @@
   background-image: radial-gradient(currentColor 0.75px, transparent 1px);
   background-size: 4px 4px;
 }
+
+/* Unlayered on purpose: an Artifact host wraps the page with its own unlayered
+   body font rule, which would beat anything in @layer base. */
+body {
+  font: 1rem / 1.5 var(--default-font-family);
+}
